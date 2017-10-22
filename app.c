@@ -37,14 +37,12 @@ int main() {
   };
 
   char reply_buf[512];
-  int num_recv = 0;
-  int ret = mongo_send_command (client,
-                                command,
-                                sizeof(command),
-                                reply_buf,
-                                sizeof(reply_buf),
-                                &num_recv);
-  if (!ret) {
+  int num_recv = mongo_send_command (client,
+                                     command,
+                                     sizeof(command),
+                                     reply_buf,
+                                     sizeof(reply_buf));
+  if (num_recv == -1) {
     printf("Could not send, errno=%d\n", errno);
     return 1;
   }

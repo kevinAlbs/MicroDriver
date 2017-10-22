@@ -49,8 +49,7 @@ int mongo_send_command (mongo_client_t* client,
                         char* command,
                         int command_size,
                         char* reply,
-                        int reply_size,
-                        int* num_recv) {
+                        int reply_size) {
 
   static char op_msg_header[] = {
     0x00, 0x00, 0x00, 0x00, // total message size, including this
@@ -71,10 +70,8 @@ int mongo_send_command (mongo_client_t* client,
   *as_int = total_bytes; // hope you're on a little-endian machine :)
 
   int ret = send (client->socket_fd, op_msg, total_bytes, 0);
-  if (ret == -1) return 0;
+  free (op_msg);
+  if (ret == -1) return -1;
 
-  *num_recv = recv (client->socket_fd, reply, reply_size, 0);
-  if (*num_recv == -1) return 0;
-
-  return 1;
+  return recv (client->socket_fd, reply, reply_size, 0);
 }
